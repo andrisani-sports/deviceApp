@@ -5,9 +5,15 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'ionic-material', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform) {
+
+  // AccountService.currentUser()
+  //   .then(function(user) {
+  //     $rootScope.user = user;
+  //   })
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -23,6 +29,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
+.constant('$ionicLoadingConfig', {
+  template: "<ion-spinner></ion-spinner>",
+  hideOnStateChange : false
+})
+
 .config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
@@ -31,55 +42,46 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: "AccountCtrl",
+    controllerAs : "account"
+  })
+
+  // setup an abstract state for the tabs directive (????)
+  .state('app', {
+    url: '/app',
     abstract: true,
-    templateUrl: 'templates/tabs.html'
+    templateUrl: 'templates/_masterTemplate.html',
+    controller: 'AppCtrl'
   })
 
-  // Each tab has its own nav history stack:
+  // Each page has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
+  .state('app.start', {
+    url: '/start',
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
+      'menuContent': {
+        templateUrl: 'templates/start.html',
+        controller: 'StartCtrl'
       }
     }
   })
 
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
-
-  .state('tab.account', {
-    url: '/account',
+  .state('app.pitchers', {
+    url: '/pitchers',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      'menuContent': {
+        templateUrl: 'templates/pitchers.html',
+        controller: 'PitchersCtrl'
       }
     }
-  });
+  })
+
+  ;
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/app/start');
 
 });

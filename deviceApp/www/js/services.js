@@ -1,5 +1,43 @@
 angular.module('starter.services', [])
 
+.factory('AccountService', ["$q", function($q) {
+  return {
+    currentUser : function() {
+      var def = $q.defer();
+      Stamplay.User.currentUser()
+      .then(function(response) {
+        if(response.user === undefined) {
+          def.resolve(false);
+        } else {
+          def.resolve(response.user);
+        }
+      }, function(error) {
+        def.reject();
+      }
+    )
+    return def.promise;
+  }
+}
+}])
+
+.factory('PitcherService', ["$rootScope", "$q", function($rootScope, $q) {
+
+  return {
+    getPitchers: function(query) {
+      var deffered = $q.defer();
+      Stamplay.Query("object", "task")
+      .notExists("owner")
+      .exec()
+      .then(function(response) {
+        deffered.resolve(response)
+      }, function(error) {
+        deffered.reject(err);
+      })
+      return deffered.promise;
+    }
+  }
+}])
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 

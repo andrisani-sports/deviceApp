@@ -16,8 +16,8 @@ angular.module('starter.controllers', [])
     $ionicLoading.show();
     Stamplay.User.login(vm.user)
     .then(function(user) {
-      $rootScope.user = user;
-      $state.go("tasks");
+      window.localStorage['user'] = JSON.stringify(user);
+      $state.go("app.start");
     }, function(error) {
       $ionicLoading.hide();
       errorHandler({
@@ -32,7 +32,7 @@ angular.module('starter.controllers', [])
     window.localStorage.removeItem(jwt);
     AccountService.currentUser()
     .then(function(user) {
-      $rootScope.user = user;
+      window.localStorage['user'] = user;
       $ionicLoading.hide();
     }, function(error) {
       console.error(error);
@@ -87,7 +87,7 @@ angular.module('starter.controllers', [])
     });
 }])
 
-.controller('StartCtrl', ['$scope', function($scope) {
+.controller('StartCtrl', ['$scope','TeamService', function($scope,TeamService) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -95,13 +95,18 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) { });
   
+  TeamService.getTeams().then(function(result){
+    $scope.teams = result;
+  });
 
 }])
 
 .controller('PitchersCtrl', ['$scope','PitcherService', function($scope, PitcherService) {
   
 
-  $scope.pitchers = PitcherService.getPitchers();
+  PitcherService.getPitchers().then(function(result){
+    $scope.pitchers = result;
+  });
 
 }])
 

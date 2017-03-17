@@ -1,7 +1,13 @@
 angular.module('starter.services', [])
 
-.factory('AccountService', ["$q", function($q) {
+.factory('AccountService', ['$q','$rootScope', function($q,$rootScope) {
   return {
+
+    isLoggedIn: function () {
+      var userStatus = window.localStorage['user'] != 'false' ? true : false;
+      return userStatus;
+    },
+
     currentUser : function() {
       var def = $q.defer();
       Stamplay.User.currentUser()
@@ -13,76 +19,52 @@ angular.module('starter.services', [])
         }
       }, function(error) {
         def.reject();
-      }
-    )
-    return def.promise;
-  }
-}
+      })
+      return def.promise;
+    } // end currentUser()
+
+  } // end return{}
+
 }])
 
 .factory('PitcherService', ["$rootScope", "$q", function($rootScope, $q) {
 
   return {
-    getPitchers: function(query) {
+
+    getPitchers : function(query) {
       var deffered = $q.defer();
-      Stamplay.Query("object", "task")
-      .notExists("owner")
-      .exec()
+
+      Stamplay.Object('pitchers').get({})
+      // .findByCurrentUser(["owner"])
       .then(function(response) {
-        deffered.resolve(response)
-      }, function(error) {
+        deffered.resolve(response.data)
+      }, function(err) {
         deffered.reject(err);
       })
       return deffered.promise;
     }
+  
   }
 }])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
+.factory('TeamService', ["$rootScope", "$q", function($rootScope, $q) {
 
   return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
+
+    getTeams : function(query) {
+      var deffered = $q.defer();
+
+      Stamplay.Object('teams').get({})
+      // .findByCurrentUser(["owner"])
+      .then(function(response) {
+        deffered.resolve(response.data)
+      }, function(err) {
+        deffered.reject(err);
+      })
+      return deffered.promise;
     }
-  };
-});
+  
+  }
+}])
+
+;

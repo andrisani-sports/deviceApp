@@ -7,12 +7,12 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'ionic-material', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, AccountService) {
 
-  // AccountService.currentUser()
-  //   .then(function(user) {
-  //     $rootScope.user = user;
-  //   })
+  AccountService.currentUser()
+    .then(function(user) {
+      window.localStorage['user'] = user;
+    })
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -20,12 +20,13 @@ angular.module('starter', ['ionic', 'ionic-material', 'starter.controllers', 'st
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
-
     }
+
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+  
   });
 })
 
@@ -54,7 +55,12 @@ angular.module('starter', ['ionic', 'ionic-material', 'starter.controllers', 'st
     url: '/app',
     abstract: true,
     templateUrl: 'templates/_masterTemplate.html',
-    controller: 'AppCtrl'
+    controller: 'AppCtrl',
+    onEnter: function($state, AccountService){
+        if(!AccountService.isLoggedIn()){
+           $state.go('login');
+        }
+    }
   })
 
   // Each page has its own nav history stack:
